@@ -13,14 +13,29 @@ class Post extends Component{
     constructor(props){
         super(props);
         this.state = {
+            displayName:'',
             text:'',
-            image:null
+            image:null,
+            avatar:'',
+            user:{}
         }
     };
     componentDidMount() {
         this.getPermissionAsync();
+        const user = this.props.uid || Fire.shared.uid;
+
+        this.unsubscribe = Fire.shared.firestore
+          .collection("users")
+          .doc(user)
+          .onSnapshot(doc => {
+            this.setState({ user: doc.data() });
+          });
       } 
     
+    componentWillUnmount() {
+    this.unsubscribe();
+  }
+
       getPermissionAsync = async () => {
         if (Constants.platform.android) {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -32,14 +47,22 @@ class Post extends Component{
       };
       handlePost=()=>{
         Fire.shared
-        .addPost({text:this.state.text.trim(), localUri:this.state.image})
+        .addPost({
+          displayName:this.state.user.displayName,
+          text:this.state.text.trim(), 
+          localUri:this.state.image,
+          avatar:this.state.user.avatar,
+          })
         .then(ref=>{
           if(ref!==null){
             alert('Upload Successful');
           }
           this.setState({
             text:'',
-            image:null
+            image:null,
+            localUri:'',
+            avatar:'',
+            user:{}
           });
           this.props.navigation.goBack();
         })

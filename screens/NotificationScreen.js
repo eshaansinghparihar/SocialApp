@@ -27,14 +27,14 @@ class Notification extends Component{
         return(
             <View style={styles.container}>
                 <Text>NotificationScreen</Text>
-                <Text>{this.state.email}</Text>
+                {/* <Text>{this.state.email}</Text>
                 <Text>{this.state.displayName}</Text>
                 <TouchableOpacity
                     style={styles.signOut}
                     onPress={() => this.signOutUser()}
                         >
                                     <Text style={styles.text}><AntDesign name="left" size={28} color="white" /> </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         );
     }

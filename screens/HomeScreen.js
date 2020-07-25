@@ -83,10 +83,10 @@ export default class HomeScreen extends React.Component {
         this.setState({ refreshing: false }); //Stop Rendering Spinner
       }
   renderPost = post => {
-    if (post.displayName !== '') {
+    if (post !== '') {
       return (
         <View style={styles.feedItem}>
-          <Image source={{ uri: post.avatar }} style={styles.avatar} />
+          <Image source={post.avatar? { uri: post.avatar }: require("../assets/authscreen.jpg")} style={styles.avatar} />
           <View style={{ flex: 1 }}>
             <View
               style={{

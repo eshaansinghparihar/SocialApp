@@ -19,17 +19,19 @@ class Fire{
     get displayName(){
         return (firebase.auth().currentUser|| {}).displayName;
     }
-    addPost = async ({text, localUri}) => {
+    addPost = async ({displayName, text, localUri, avatar}) => {
         // const id = uuid.v4();
         const remoteUri = await this.uploadPhotoAsync(localUri, `photos/${this.uid}/${Date.now()}`);
         return new Promise((res, rej) => {
             this.firestore
                 .collection('posts')
                 .add({
+                    displayName:displayName,
                     text,
                     uid: this.uid,
                     timestamp: this.timestamp,
-                    image: remoteUri
+                    image: remoteUri,
+                    avatar:avatar
                 })
                 .then(ref => {
                     res(ref);

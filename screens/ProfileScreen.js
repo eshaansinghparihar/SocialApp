@@ -34,6 +34,9 @@ export default class ProfileScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+          <View style={styles.header}>
+                  <Text style={styles.headerTitle}>Profile</Text>
+            </View>
         <View style={{ marginTop: 64, alignItems: "center" }}>
           <View style={styles.avatarContainer}>
             <Image
@@ -49,7 +52,7 @@ export default class ProfileScreen extends React.Component {
         </View>
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
-            <Text style={styles.statAmount}>21</Text>
+            <Text style={styles.statAmount}>2</Text>
             <Text style={styles.statTitle}>Posts</Text>
           </View>
           <View style={styles.stat}>
@@ -57,7 +60,7 @@ export default class ProfileScreen extends React.Component {
             <Text style={styles.statTitle}>Followers</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statAmount}>63</Text>
+            <Text style={styles.statAmount}>693</Text>
             <Text style={styles.statTitle}>Following</Text>
           </View>
         </View>
@@ -115,5 +118,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
     marginTop: 4
+  },
+  header: {
+    paddingTop: 64,
+    paddingBottom: 16,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#EBECF4",
+    shadowColor: "#454D65",
+    shadowOffset: { height: 5 },
+    shadowRadius: 15,
+    shadowOpacity: 0.2,
+    zIndex: 10
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "500"
   }
 });
