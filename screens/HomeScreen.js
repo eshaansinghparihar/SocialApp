@@ -83,7 +83,13 @@ export default class HomeScreen extends React.Component {
         this.setState({ refreshing: false }); //Stop Rendering Spinner
       }
   renderPost = post => {
-    if (post !== '') {
+    if (post._40 === 0) 
+    {
+      return(
+        <View></View>
+      );
+    }
+    else{
       return (
         <View style={styles.feedItem}>
           <Image source={post.avatar? { uri: post.avatar }: require("../assets/authscreen.jpg")} style={styles.avatar} />
@@ -133,7 +139,8 @@ export default class HomeScreen extends React.Component {
         </View>
         <FlatList
           style={styles.feed}
-          data={db}
+          data={this.state.dataSource}
+          // {this.state.dataSource}
           renderItem={({ item }) => this.renderPost(item)}
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}

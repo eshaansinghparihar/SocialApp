@@ -1,22 +1,70 @@
 import React from "react";
 import {
   View,
+  ScrollView,
   Text,
   StyleSheet,
   Button,
   Image,
-  ActivityIndicator
+  FlatList,
+  ActivityIndicator,
+  RefreshControl
 } from "react-native";
+import {Tile} from 'react-native-elements';
+import * as firebase from "firebase";
 import Fire from "../Fire";
+require("firebase/firestore");
+
+var db = [
+    firebase
+          .firestore()
+          .collection("posts")
+          .get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+              let posts = querySnapshot.docs.map(doc => doc.data());
+              // console.log(posts);
+              return posts;
+            });
+          })
+          .catch(err=>alert(err))
+    
+];
 
 export default class ProfileScreen extends React.Component {
-  state = {
-    user: {}
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+      user: {},
+      post:[],
+      userid:null,
+      
+    };
+    unsubscribe =null;
+  }
 
-  unsubscribe = null;
+  
 
   componentDidMount() {
+    const userid=(this.props.uid || Fire.shared.uid);
+    this.setState({userid:userid});
+
+    this.setState({
+      post: (db = [
+        firebase
+          .firestore()
+          .collection("posts")
+          .where('uid', '==', userid)
+          .get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(doc => {
+              let posts = querySnapshot.docs.filter(doc => {doc.uid===userid});
+              db.push(doc.data());
+            });
+          })
+      ])
+    });
+
     const user = this.props.uid || Fire.shared.uid;
 
     this.unsubscribe = Fire.shared.firestore
@@ -25,13 +73,79 @@ export default class ProfileScreen extends React.Component {
       .onSnapshot(doc => {
         this.setState({ user: doc.data() });
       });
-  }
-
+      }
   componentWillUnmount() {
     this.unsubscribe();
+
   }
+  _refreshControl() {
+    return (
+      <RefreshControl
+        refreshing={this.state.refreshing}
+        onRefresh={() => this._refreshListView()}
+      />
+    );
+  }
+  _refreshListView() {
+    //Start Rendering Spinner
+    this.setState({ refreshing: true });
+
+    //Updating the dataSource with new data
+    this.setState({
+      dataSource: (db = [
+        firebase
+          .firestore()
+          .collection("posts")
+          .get()
+          .then(function(querySnapshot) {
+            querySnapshot.forEach(doc => {
+              let posts = querySnapshot.docs.map(doc => doc.data());
+              db.push(doc.data());
+            });
+          })
+      ])
+    });
+    this.setState({ refreshing: false }); //Stop Rendering Spinner
+  }
+renderPost = (post,index) => {
+  if (post._40 === 0) 
+{
+  return(
+    <View></View>
+  );
+}
+else{
+  return (
+    <View>
+          <Tile
+      key={index}
+      title={post.text}
+      imageSrc={{ uri: post.image}}
+      caption={post.displayName}
+      fontWeight='bold'
+      featured
+      titleStyle={{color:'white',fontWeight:"bold"}}
+      captionStyle={{color:'white',fontWeight:"bold"}}
+        />
+    </View>
+  );
+}
+};
+
 
   render() {
+    // (this.state.post.filter((item)=>{(this.props.uid || Fire.shared.uid)===item.uid}))
+    // console.log(this.state.user.displayName)
+    // var username=this.state.user.displayName;
+    
+    // const {userid}=this.state;
+    // console.log(userid)
+    this.state.post.map((pos)=>{console.log(pos)})
+    var postnumber=this.state.post.length-1;
+    console.log(postnumber);
+    // const result= this.state.post.filter(pos=>{userid===pos.uid})
+    // console.log(result.length);
+    // array.map(item=>console.log(item));
     return (
       <View style={styles.container}>
           <View style={styles.header}>
@@ -52,7 +166,7 @@ export default class ProfileScreen extends React.Component {
         </View>
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
-            <Text style={styles.statAmount}>2</Text>
+            <Text style={styles.statAmount}>{postnumber}</Text>
             <Text style={styles.statTitle}>Posts</Text>
           </View>
           <View style={styles.stat}>
@@ -71,6 +185,16 @@ export default class ProfileScreen extends React.Component {
           }}
           title="Log out"
         />
+
+        <FlatList
+          style={styles.feed}
+          data={this.state.post}
+          renderItem={({ item }) => this.renderPost(item)}
+          keyExtractor={(item, index) => String(index)}
+          showsVerticalScrollIndicator={false}
+          refreshControl={this._refreshControl()}
+        ></FlatList>
+
       </View>
     );
   }
