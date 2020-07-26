@@ -170,11 +170,11 @@ else{
             <Text style={styles.statTitle}>Posts</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statAmount}>981</Text>
+            <Text style={styles.statAmount}>0</Text>
             <Text style={styles.statTitle}>Followers</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statAmount}>693</Text>
+            <Text style={styles.statAmount}>0</Text>
             <Text style={styles.statTitle}>Following</Text>
           </View>
         </View>
