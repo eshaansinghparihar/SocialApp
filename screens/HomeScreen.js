@@ -14,7 +14,7 @@ var db = [
           .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
               let posts = querySnapshot.docs.map(doc => doc.data());
-              console.log(posts);
+              // console.log(posts);
               return posts;
             });
           })

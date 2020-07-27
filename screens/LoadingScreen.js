@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, ActivityIndicator,Image,StatusBar } from 'react-native';
 import * as firebase from 'firebase';
 import Fire from '../Fire';
 class Loading extends Component{
@@ -12,8 +11,9 @@ class Loading extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <StatusBar style="auto" />
-                <Text style={styles.text}>Loading</Text>
+                <StatusBar barStyle="light-content"/>
+                <Image source={require("../assets/loading.jpg")} style={{marginTop:-540,right:-240, position:"absolute" ,resizeMode:'cover'}}></Image>
+                <Text style={styles.text}>Socio</Text>
                 <ActivityIndicator size="large"></ActivityIndicator>
             </View>
         );
@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text:{
-    fontSize:24,
+    fontSize:48,
     margin:10,
-    fontWeight:"500",
-    color:'black'
+    fontWeight:"600",
+    color:'white'
   }
 });
 export default Loading;

@@ -140,9 +140,9 @@ else{
     
     // const {userid}=this.state;
     // console.log(userid)
-    this.state.post.map((pos)=>{console.log(pos)})
+    // this.state.post.map((pos)=>{console.log(pos)})
     var postnumber=this.state.post.length-1;
-    console.log(postnumber);
+    // console.log(postnumber);
     // const result= this.state.post.filter(pos=>{userid===pos.uid})
     // console.log(result.length);
     // array.map(item=>console.log(item));

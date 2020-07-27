@@ -42,7 +42,8 @@ class Register extends Component{
         //         displayName:name
         //     });
         // }).catch(error=>{this.setState({errorMessage:error.message})})
-        Fire.shared.createUser(this.state.user);
+        Fire.shared.createUser(this.state.user)
+        this.props.navigation.navigate("Loading")
     }
     handlePickAvatar = async () => {
     
