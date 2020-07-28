@@ -33,8 +33,12 @@ class Fire{
                     image: remoteUri,
                     avatar:avatar
                 })
-                .then(ref => {
-                    res(ref);
+                .then(documentReference => {
+                       firebase.firestore().collection("posts").doc(documentReference.id).update({
+                        postId:documentReference.id
+                        })
+                    // console.log(`Added document with name: ${documentReference.id}`);
+                    res(documentReference);
                 })
                 .catch(error => {
                     alert(error);

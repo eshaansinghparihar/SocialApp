@@ -43,7 +43,7 @@ class Register extends Component{
         //     });
         // }).catch(error=>{this.setState({errorMessage:error.message})})
         Fire.shared.createUser(this.state.user)
-        this.props.navigation.navigate("Loading")
+        // this.props.navigation.navigate("Loading")
     }
     handlePickAvatar = async () => {
     

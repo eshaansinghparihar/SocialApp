@@ -1,11 +1,12 @@
 import React from "react";
 import {View,Text,StyleSheet,Image,FlatList,RefreshControl} from "react-native";
+import { Input } from 'react-native-elements';
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import * as firebase from "firebase";
 import Fire from "../Fire";
+import { TouchableOpacity } from "react-native-gesture-handler";
 require("firebase/firestore");
-
 var db = [
     firebase
           .firestore()
@@ -21,7 +22,7 @@ var db = [
           .catch(err=>alert(err))
     
 ];
-
+ 
 // let getDocs = () => {
 //   // [START get_multiple_all]
 //   return [
@@ -49,9 +50,35 @@ export default class HomeScreen extends React.Component {
         super(props);
         this.state = {
             refreshing: false,
-            dataSource: db
+            dataSource: db,
+            user:{},
+            comment:''
           }
         
+    }
+    componentDidMount(){
+      const userid=(this.props.uid || Fire.shared.uid);
+      this.unsubscribe=firebase.firestore().collection("users").doc(userid).onSnapshot(doc => {
+        this.setState({ user: doc.data() });
+      });
+      
+    }
+    componentWillUnmount(){
+      this.unsubscribe();
+    }
+    handleLike(postId){
+      // firebase.firestore().collection("posts").doc(postId).collection("like").add({
+      //   user:this.state.user.displayName
+      //   })
+      firebase.firestore().collection("posts").doc(postId).update({
+        like:firebase.firestore.FieldValue.arrayUnion(this.state.user.displayName)
+        })
+    }
+    handleComment(postId){
+      firebase.firestore().collection("posts").doc(postId).update({
+        comment:firebase.firestore.FieldValue.arrayUnion({comment:this.state.comment,displayName:this.state.user.displayName}),
+        })
+      this.setState({comment:''})
     }
     _refreshControl() {
         return (
@@ -80,9 +107,22 @@ export default class HomeScreen extends React.Component {
               })
           ])
         });
-        this.setState({ refreshing: false }); //Stop Rendering Spinner
+        this.setState({ refreshing: false }); 
+        //Stop Rendering Spinner
       }
-  renderPost = post => {
+      renderComments(comment){
+        return(        
+        <Text style={styles.comment}>
+          {(comment===undefined)?'':comment.displayName} commented {(comment===undefined)?'':comment.comment}
+        </Text>
+        );
+
+      }
+      renderPost = post => {
+    var postId=post.postId
+    var like=post.like;
+    var comments=post.comment
+
     if (post._40 === 0) 
     {
       return(
@@ -108,7 +148,7 @@ export default class HomeScreen extends React.Component {
                 </Text>
               </View>
 
-              <Ionicons name="ios-more" size={24} color="#73788B" />
+              <TouchableOpacity><Ionicons name="ios-more" size={24} color="#73788B" /></TouchableOpacity>
             </View>
             <Text style={styles.post}>{post.text}</Text>
             <Image
@@ -117,14 +157,37 @@ export default class HomeScreen extends React.Component {
               resizeMode="cover"
             />
             <View style={{ flexDirection: "row" }}>
-              <Ionicons
+            <Text style={styles.like}>
+              {(like===undefined)?(0):like[0]} {(like===undefined ) ? '': `and ${like.length -1}  others `} like this.
+              {/* {(like.length===undefined || like.length===0) ? '': `${like.length -1}  others `} */}
+
+            </Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity onPress={()=>this.handleLike(postId)}><Ionicons
                 name="ios-heart-empty"
                 size={24}
                 color="#73788B"
                 style={{ marginRight: 16 }}
-              />
-              <Ionicons name="ios-chatboxes" size={24} color="#73788B" />
+              /></TouchableOpacity>
+              <TouchableOpacity onPress={()=>this.handleComment(postId)}><Ionicons name="ios-chatboxes" size={24} color="#73788B" /></TouchableOpacity>
+    
+              <View style={{ flexDirection: "row" ,justifyContent:'center'}}>
+                <Input
+                    placeholder="Add your thoughts here !"
+                    onChangeText={(comment) => this.setState({comment})}
+                    value={this.state.comment}
+                    containerStyle={styles.formInput}></Input>
+
             </View>
+            </View>
+            <FlatList
+              style={styles.comment}
+              data={comments}
+              renderItem={({ item }) => this.renderComments(item)}
+              keyExtractor={(item, index) => String(index)}
+              showsVerticalScrollIndicator={false}
+              ></FlatList>
           </View>
         </View>
       );
@@ -155,6 +218,14 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: "#EBECF4"
     },
+    formInput: {
+      height: 20,
+      backgroundColor:"#fff",
+      marginTop:10,
+      marginBottom:10,
+      justifyContent:'center',
+      marginHorizontal:-16
+  },
     header: {
       paddingTop: 64,
       paddingBottom: 16,
@@ -179,7 +250,7 @@ const styles = StyleSheet.create({
     feedItem: {
       backgroundColor: "#FFF",
       borderRadius: 5,
-      padding: 8,
+      padding: 18,
       flexDirection: "row",
       marginVertical: 8
     },
@@ -198,6 +269,19 @@ const styles = StyleSheet.create({
       fontSize: 11,
       color: "#C4C6CE",
       marginTop: 4
+    },
+    like: {
+      fontSize: 13,
+      color: "#000",
+      marginTop: 4
+    },
+    comment: {
+      fontSize: 13,
+      color: "#000",
+      marginTop: 4,
+      marginBottom:8,
+      justifyContent:'flex-start',
+      // alignItems:'center'
     },
     post: {
       marginTop: 16,
