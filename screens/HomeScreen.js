@@ -3,6 +3,7 @@ import {View,Text,StyleSheet,Image,FlatList,RefreshControl} from "react-native";
 import { Input } from 'react-native-elements';
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
+import FeedItem from './FeedItem';
 import * as firebase from "firebase";
 import Fire from "../Fire";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -67,20 +68,7 @@ export default class HomeScreen extends React.Component {
     componentWillUnmount(){
       this.unsubscribe();
     }
-    handleLike(postId){
-      // firebase.firestore().collection("posts").doc(postId).collection("like").add({
-      //   user:this.state.user.displayName
-      //   })
-      firebase.firestore().collection("posts").doc(postId).update({
-        like:firebase.firestore.FieldValue.arrayUnion(this.state.user.displayName)
-        })
-    }
-    handleComment(postId){
-      firebase.firestore().collection("posts").doc(postId).update({
-        comment:firebase.firestore.FieldValue.arrayUnion({comment:this.state.comment,displayName:this.state.user.displayName}),
-        })
-      this.setState({comment:''})
-    }
+
     _refreshControl() {
         return (
           <RefreshControl
@@ -111,89 +99,7 @@ export default class HomeScreen extends React.Component {
         this.setState({ refreshing: false }); 
         //Stop Rendering Spinner
       }
-      renderComments(comment){
-        return(        
-        <Text style={styles.comment}>
-          {(comment===undefined)?'':comment.displayName} commented {(comment===undefined)?'':comment.comment}
-        </Text>
-        );
 
-      }
-      renderPost = post => {
-    var postId=post.postId
-    var like=post.like;
-    var comments=post.comment
-
-    if (post._40 === 0) 
-    {
-      return(
-        <View></View>
-      );
-    }
-    else{
-      return (
-        <View style={styles.feedItem}>
-          <Image source={post.avatar? { uri: post.avatar }: require("../assets/authscreen.jpg")} style={styles.avatar} />
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}
-            >
-              <View>
-                <Text style={styles.name}>{post.displayName}</Text>
-                <Text style={styles.timestamp}>
-                  {moment(post.timestamp).fromNow()}
-                </Text>
-              </View>
-
-              <TouchableOpacity><Ionicons name="ios-more" size={24} color="#73788B" /></TouchableOpacity>
-            </View>
-            <Text style={styles.post}>{post.text}</Text>
-            <Image
-              source={{ uri: post.image }}
-              style={styles.postImage}
-              resizeMode="cover"
-            />
-            <View style={{ flexDirection: "row" }}>
-            <Text style={styles.like}>
-              {(like===undefined)?(0):like[like.length -1]} {(like===undefined ) ? '': `and ${like.length -1}  others `} like this.
-              {/* {(like.length===undefined || like.length===0) ? '': `${like.length -1}  others `} */}
-
-            </Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={()=>this.handleLike(postId)}><Ionicons
-                name="ios-heart-empty"
-                size={24}
-                color="#73788B"
-                style={{ marginRight: 16 }}
-              /></TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.handleComment(postId)}><Ionicons name="ios-chatboxes" size={24} color="#73788B" /></TouchableOpacity>
-    
-              <View style={{ flexDirection: "row" ,justifyContent:'center'}}>
-                <Input
-                    placeholder="Add your thoughts here !"
-                    onChangeText={(comment) => this.setState({comment})}
-                    // value={this.state.comment}
-                    containerStyle={styles.formInput}></Input>
-
-            </View>
-            </View>
-            <FlatList
-              style={styles.comment}
-              data={comments}
-              renderItem={({ item }) => this.renderComments(item)}
-              keyExtractor={(item, index) => String(index)}
-              showsVerticalScrollIndicator={false}
-              ></FlatList>
-          </View>
-        </View>
-      );
-    }
-  };
 
   render() {
     var {dataSource}=this.state
@@ -205,8 +111,9 @@ export default class HomeScreen extends React.Component {
         <FlatList
           style={styles.feed}
           data={dataSource}
+          renderItem={({ item }) => <FeedItem post={item} user={this.state.user}/>}
           // {this.state.dataSource}
-          renderItem={({ item }) => this.renderPost(item)}
+          // renderItem={({ item }) => this.renderPost(item)}
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}
           refreshControl={this._refreshControl()}
