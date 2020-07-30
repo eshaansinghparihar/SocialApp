@@ -1,12 +1,21 @@
 {
-  "name": "App",
-  "displayName": "App",
+  "name": "Socio",
+  "displayName": "Socio",
   "expo": {
-    "name": "App",
+    "name": "Socio",
+    "icon": "./assets/logo.png",
     "slug": "expo-template-bare",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.socio.socio",
+      "versionCode":1
+    },
+    "ios": {
+      "bundleIdentifier": "com.socio.socio",
+      "buildNumber": "1.0.0"
+    }
   }
 }

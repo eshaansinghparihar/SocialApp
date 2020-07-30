@@ -57,6 +57,24 @@ export default class HomeScreen extends React.Component {
         
     }
     componentDidMount(){
+      this.setState({ refreshing: true });
+    
+      //Updating the dataSource with new data
+      this.setState({
+        dataSource: (db = [
+          firebase
+            .firestore()
+            .collection("posts")
+            .get()
+            .then(function(querySnapshot) {
+              querySnapshot.forEach(doc => {
+                let posts = querySnapshot.docs.map(doc => doc.data());
+                db.push(doc.data());
+              });
+            })
+        ])
+      });
+      this.setState({ refreshing: false }); 
       const userid=(this.props.uid || Fire.shared.uid);
       this.unsubscribe=firebase.firestore().collection("users").doc(userid).onSnapshot(doc => {
         this.setState({ user: doc.data() });
@@ -158,7 +176,7 @@ export default class HomeScreen extends React.Component {
             />
             <View style={{ flexDirection: "row" }}>
             <Text style={styles.like}>
-              {(like===undefined)?(0):like[0]} {(like===undefined ) ? '': `and ${like.length -1}  others `} like this.
+              {(like===undefined)?(0):like[like.length -1]} {(like===undefined ) ? '': `and ${like.length -1}  others `} like this.
               {/* {(like.length===undefined || like.length===0) ? '': `${like.length -1}  others `} */}
 
             </Text>
@@ -176,7 +194,7 @@ export default class HomeScreen extends React.Component {
                 <Input
                     placeholder="Add your thoughts here !"
                     onChangeText={(comment) => this.setState({comment})}
-                    value={this.state.comment}
+                    // value={this.state.comment}
                     containerStyle={styles.formInput}></Input>
 
             </View>
@@ -203,7 +221,6 @@ export default class HomeScreen extends React.Component {
         <FlatList
           style={styles.feed}
           data={this.state.dataSource}
-          // {this.state.dataSource}
           renderItem={({ item }) => this.renderPost(item)}
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}
