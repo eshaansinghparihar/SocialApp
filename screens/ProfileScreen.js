@@ -186,7 +186,6 @@ else{
           }}
           title="Log out"
         />
-
         <FlatList
           style={styles.feed}
           data={this.state.post}
@@ -195,7 +194,6 @@ else{
           showsVerticalScrollIndicator={false}
           refreshControl={this._refreshControl()}
         ></FlatList>
-
       </View>
     );
   }
@@ -245,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 4
   },
   header: {
-    paddingTop: 64,
+    paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#FFF",
     alignItems: "center",

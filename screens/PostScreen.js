@@ -155,7 +155,7 @@ imagePreview:{
     flexDirection:"column"
 },
 header: {
-  paddingTop: 64,
+  paddingTop: 16,
   paddingBottom: 16,
   backgroundColor: "#FFF",
   alignItems: "center",

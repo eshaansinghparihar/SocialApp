@@ -57,24 +57,7 @@ export default class HomeScreen extends React.Component {
         
     }
     componentDidMount(){
-      this.setState({ refreshing: true });
-    
-      //Updating the dataSource with new data
-      this.setState({
-        dataSource: (db = [
-          firebase
-            .firestore()
-            .collection("posts")
-            .get()
-            .then(function(querySnapshot) {
-              querySnapshot.forEach(doc => {
-                let posts = querySnapshot.docs.map(doc => doc.data());
-                db.push(doc.data());
-              });
-            })
-        ])
-      });
-      this.setState({ refreshing: false }); 
+      this._refreshListView();
       const userid=(this.props.uid || Fire.shared.uid);
       this.unsubscribe=firebase.firestore().collection("users").doc(userid).onSnapshot(doc => {
         this.setState({ user: doc.data() });
@@ -213,6 +196,7 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
+    var {dataSource}=this.state
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -220,7 +204,8 @@ export default class HomeScreen extends React.Component {
         </View>
         <FlatList
           style={styles.feed}
-          data={this.state.dataSource}
+          data={dataSource}
+          // {this.state.dataSource}
           renderItem={({ item }) => this.renderPost(item)}
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}
@@ -244,7 +229,7 @@ const styles = StyleSheet.create({
       marginHorizontal:-16
   },
     header: {
-      paddingTop: 64,
+      paddingTop: 16,
       paddingBottom: 16,
       backgroundColor: "#FFF",
       alignItems: "center",
