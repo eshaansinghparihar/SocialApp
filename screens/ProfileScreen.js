@@ -88,10 +88,12 @@ export default class ProfileScreen extends React.Component {
     );
   }
   _refreshListView() {
+    const userid=(this.props.uid || Fire.shared.uid);
+    this.setState({userid:userid});
     //Start Rendering Spinner
     this.setState({ refreshing: true });
 
-    //Updating the dataSource with new data
+    //Updating the posts with new data
     this.setState({
       dataSource: (db = [
         firebase
@@ -193,6 +195,7 @@ else{
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}
           refreshControl={this._refreshControl()}
+          extraData={this.state.post}
         ></FlatList>
       </View>
     );

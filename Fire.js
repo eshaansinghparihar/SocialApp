@@ -118,7 +118,8 @@ class Fire{
                 remoteUri = await this.uploadPhotoAsync(user.avatar, `avatars/${this.uid}`);
                 db.set({ avatar: remoteUri }, { merge: true });
             }
-        } catch (error) {
+        }
+         catch (error) {
             alert("Error: ", error);
         }
     };

@@ -47,11 +47,7 @@ export default class FeedItem extends Component{
           comment:firebase.firestore.FieldValue.arrayUnion({comment:this.state.commentToBeUploaded,displayName:this.state.user.displayName}),
           })
         this.setState({comments:this.state.comments.concat({comment:commentToBeUploaded,displayName:displayName})})
-        console.log("State set for postID"+postId+"=")
-        console.log(this.state);  
         this.setState({commentToBeUploaded:''})
-        console.log("State Reset for postID"+postId+"=")
-        console.log(this.state);  
       }
     renderComments(comment){
         return(        
@@ -62,12 +58,9 @@ export default class FeedItem extends Component{
 
     }
     render(){
-        console.log(this.state.likes)
-        // console.log(this.state.comments)
         var {post}=this.props;
         var postId=post.postId
         var {likes}=this.state;
-        var comments=post.comment
   
         if (post._40 === 0) 
         {
@@ -104,7 +97,7 @@ export default class FeedItem extends Component{
                 />
                 <View style={{ flexDirection: "row" }}>
                 <Text style={styles.like}>
-                  {(likes===undefined)?(0):likes[likes.length -1]} {(likes===undefined ) ? '': `and ${likes.length -1}  others `} like this.
+                  {(likes===undefined)?(''):likes[likes.length -1]} {(likes===undefined || likes.length-1<0) ? 0: `and ${likes.length -1}  others `} like this.
                   {/* {(like.length===undefined || like.length===0) ? '': `${like.length -1}  others `} */}
   
                 </Text>

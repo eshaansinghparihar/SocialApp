@@ -117,6 +117,7 @@ export default class HomeScreen extends React.Component {
           keyExtractor={(item, index) => String(index)}
           showsVerticalScrollIndicator={false}
           refreshControl={this._refreshControl()}
+          extraData={this.state.dataSource}
         ></FlatList>
       </View>
     );
