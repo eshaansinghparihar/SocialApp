@@ -1,7 +1,6 @@
 
 # SocialApp
 
-![Demo](1595778045452.mp4)
 Developed a Social Networking App which is a Picture Sharing Platform ,and is similar to Instagram.
 
 ## Stack Used -
