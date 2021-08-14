@@ -1,0 +1,12 @@
+# SocialApp
+
+Developed a Social Networking App which is a Picture Sharing Platform , and is more of an Instagram Clone.
+
+Stack Used -
+Front End: React Native
+Backend: Google Firebase Backend As A Service
+
+Features:-
+1.Upload Images as Posts.
+2.Like and Comment on Posts.
+3.View all Posts uploaded by you in the profile Section.
