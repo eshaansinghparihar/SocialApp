@@ -1,7 +1,7 @@
 
 # SocialApp
 
-Developed a Social Networking App which is a Picture Sharing Platform , and is more of an Instagram Clone.
+Developed a Social Networking App which is a Picture Sharing Platform ,and is similar to Instagram.
 
 ## Stack Used -
 Front End: React Native<br />
